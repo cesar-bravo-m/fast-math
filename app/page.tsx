@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Counter } from "./components/counter/Counter";
+import Counter from "@/app/components/counter/Counter";
+import { Exercise } from "./components/exercise/Exercise";
 
 export default function IndexPage() {
-  return <Counter />;
+  return <div>
+    <Exercise />
+  </div>
 }
 
 export const metadata: Metadata = {
