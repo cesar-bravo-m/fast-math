@@ -130,12 +130,48 @@ const InputSection = memo(({
 ))
 InputSection.displayName = 'InputSection'
 
+// Add ComboCounter component
+const ComboCounter = memo(({ combo, breaking, gaugeLevel }: { 
+    combo: number, 
+    breaking: boolean,
+    gaugeLevel: number 
+}) => {
+    if (combo <= 1 && !breaking) return null;
+    
+    return (
+        <div className={`disco-combo ${breaking ? 'breaking' : ''}`}>
+            <div className="disco-combo-count">
+                <span className="disco-combo-x">×</span>
+                {combo}
+            </div>
+            <div className="disco-combo-label">COMBO</div>
+            <div className="disco-combo-gauge-container">
+                <div 
+                    className="disco-combo-gauge" 
+                    style={{ width: `${gaugeLevel}%` }}
+                />
+            </div>
+            {breaking && (
+                <>
+                    {[...Array(12)].map((_, i) => (
+                        <div key={i} className="disco-combo-shard" />
+                    ))}
+                </>
+            )}
+        </div>
+    );
+});
+ComboCounter.displayName = 'ComboCounter';
+
 export const Disco = () => {
     const [inputAnswer, setInputAnswer] = useState<string>('');
     const [pastText, setPastText] = useState<DiscoPrompt[]>([]);
     const [currentPromptIndex, setCurrentPromptIndex] = useState<number>(0);
     const [prompts, setPrompts] = useState<DiscoPrompt[]>([]);
     const { data, isLoading, refetch } = useGetExerciseQuery();
+    const [combo, setCombo] = useState<number>(0);
+    const [isComboBreaking, setIsComboBreaking] = useState(false);
+    const [gaugeLevel, setGaugeLevel] = useState<number>(100);
 
     // Initial fetch of exercises
     useEffect(() => {
@@ -161,6 +197,30 @@ export const Disco = () => {
 
     const currentText = prompts[currentPromptIndex];
 
+    const handleComboBreak = async () => {
+        setIsComboBreaking(true);
+        await new Promise(resolve => setTimeout(resolve, 500)); // Wait for animation
+        setIsComboBreaking(false);
+        setCombo(0);
+    };
+
+    // Gauge depletion
+    useEffect(() => {
+        if (combo <= 1) return;
+
+        const depleteInterval = setInterval(() => {
+            setGaugeLevel(prev => {
+                if (prev <= 0) {
+                    handleComboBreak();
+                    return 0;
+                }
+                return Math.max(0, prev - 1); // Depletes by 1% every interval
+            });
+        }, 100); // Check every 100ms
+
+        return () => clearInterval(depleteInterval);
+    }, [combo]);
+
     const handleSubmit = () => {
         if (!inputAnswer.trim() || !currentText) return;
         
@@ -170,6 +230,16 @@ export const Disco = () => {
             givenAnswer: inputAnswer,
             correct: isCorrect
         };
+
+        if (isCorrect) {
+            setCombo(prev => prev + 1);
+            setGaugeLevel(100); // Reset gauge on correct answer
+        } else if (combo > 1) {
+            handleComboBreak();
+        } else {
+            setCombo(0);
+        }
+
         setPastText([...pastText, answeredPrompt]);
         setCurrentPromptIndex(prev => prev + 1);
         setInputAnswer('');
@@ -177,6 +247,12 @@ export const Disco = () => {
 
     const handleSkip = () => {
         if (!currentText) return;
+
+        if (combo > 1) {
+            handleComboBreak();
+        } else {
+            setCombo(0);
+        }
 
         const skippedPrompt = {
             ...currentText,
@@ -209,6 +285,11 @@ export const Disco = () => {
                 onSubmit={handleSubmit}
                 onSkip={handleSkip}
                 onKeyPress={handleKeyPress}
+            />
+            <ComboCounter 
+                combo={combo} 
+                breaking={isComboBreaking} 
+                gaugeLevel={gaugeLevel}
             />
         </div>
     );
