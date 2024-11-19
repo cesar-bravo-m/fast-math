@@ -1,0 +1,274 @@
+.disco-container {
+    width: 500px;
+    height: 800px;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    border-right: 2px solid rgba(255, 255, 255, 0.1);
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+}
+
+/* .disco-color-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    z-index: 1;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    pointer-events: none;
+} */
+
+.disco-past-text-wrapper {
+    position: absolute;
+    bottom: 200px;
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: 4px;
+}
+
+.disco-scroll-indicator {
+    width: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 20px 8px;
+    border-radius: 4px;
+    position: relative;
+    height: 400px;
+}
+
+.disco-scroll-progress {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    transition: height 0.1s ease;
+}
+
+.disco-past-text {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.disco-past-text::-webkit-scrollbar {
+    display: none;
+}
+
+.disco-past-text-spacer {
+    flex: 1 0 auto;
+    min-height: 20px;
+}
+
+.disco-current-text {
+    position: absolute;
+    bottom: 120px;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    z-index: 3;
+    padding-top: 40px;
+}
+
+.disco-dialogue {
+    color: #e0e0e0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease-out forwards;
+    transition: transform 0.2s ease;
+}
+
+.disco-dialogue.active {
+    opacity: 1;
+}
+
+.disco-prompt {
+    margin-bottom: 0.5rem;
+}
+
+.disco-answer {
+    padding-left: 1rem;
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+    margin-left: 1rem;
+    font-style: italic;
+}
+
+/* Skill-based colors (Disco Elysium style) */
+.disco-dialogue.logic {
+    color: #5da8ff;
+}
+
+.disco-dialogue.drama {
+    color: #ff5d5d;
+}
+
+.disco-result {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    font-style: normal;
+    opacity: 0.8;
+}
+
+.disco-result.success {
+    color: #4eff91;
+}
+
+.disco-result.failure {
+    color: #ff4e4e;
+}
+
+/* Animation for new dialogue entries */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.disco-dialogue {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+.disco-dialogue:hover {
+    transform: translateX(4px);
+}
+
+/* Scrollbar styling */
+.disco-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.disco-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.disco-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.disco-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.disco-input-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(
+        transparent 0%,
+        rgba(0, 0, 0, 0.8) 30%
+    );
+    z-index: 2;
+}
+
+.disco-input {
+    width: 92.5%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 12px 16px;
+    font-family: 'Georgia', serif;
+    font-size: 1.1rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.disco-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.disco-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+}
+
+.disco-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.disco-button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.disco-button {
+    flex: 1;
+    padding: 10px 20px;
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.disco-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.disco-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.disco-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.disco-button.submit {
+    background: rgba(93, 168, 255, 0.2);
+    border-color: rgba(93, 168, 255, 0.3);
+}
+
+.disco-button.submit:hover:not(:disabled) {
+    background: rgba(93, 168, 255, 0.3);
+    border-color: rgba(93, 168, 255, 0.4);
+}
+
+.disco-button.skip {
+    background: rgba(255, 93, 93, 0.2);
+    border-color: rgba(255, 93, 93, 0.3);
+}
+
+.disco-button.skip:hover:not(:disabled) {
+    background: rgba(255, 93, 93, 0.3);
+    border-color: rgba(255, 93, 93, 0.4);
+}
+
+.disco-scroll-indicator:hover .disco-scroll-progress {
+    background: rgba(255, 255, 255, 0.5);
+    width: 100%;
+}

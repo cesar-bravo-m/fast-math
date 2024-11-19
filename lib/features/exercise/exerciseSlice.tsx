@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const exerciseApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
     endpoints: (builder) => ({
-        getExercise: builder.query<ExerciseResponseData, void>({ query: () => 'exercise' })
+        getExercise: builder.query<{exercises: ExerciseResponseData[]}, void>({ query: () => 'exercise' })
     })
 })
 

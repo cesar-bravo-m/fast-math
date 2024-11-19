@@ -1,0 +1,152 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    min-width: 320px;
+    transform: translateY(0);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.title {
+    text-align: center;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.problem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.factor {
+    background: #e2e8f0;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    color: #2d3748;
+}
+
+.operator, .equals {
+    color: #4a5568;
+}
+
+.inputGroup {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    transition: border-color 0.2s ease;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #4299e1;
+}
+
+.button {
+    padding: 0.75rem 1.5rem;
+    background: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.button:hover:not(:disabled) {
+    background: #3182ce;
+    transform: translateY(-2px);
+}
+
+.button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.buttonDisabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.feedback {
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    animation: fadeIn 0.3s ease;
+}
+
+.correct {
+    background: #c6f6d5;
+    color: #2f855a;
+}
+
+.incorrect {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.loader {
+    color: #4299e1;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.error {
+    color: #c53030;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Make it responsive */
+@media (max-width: 480px) {
+    .card {
+        min-width: unset;
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    .inputGroup {
+        flex-direction: column;
+    }
+
+    .button {
+        width: 100%;
+    }
+} 
