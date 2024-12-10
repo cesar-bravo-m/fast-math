@@ -280,6 +280,7 @@
     left: 20px;
     z-index: 4;
     animation: comboAppear 0.3s ease-out;
+    min-width: 100px;
 }
 
 .disco-combo-count {
@@ -557,4 +558,32 @@
 .disco-combo-gauge[style*="width: 1"] {
     animation: gaugeWarning 0.5s ease-in-out infinite;
     background: #ff4444;
+}
+
+/* Add these styles for max combo */
+.disco-combo-max {
+    font-size: 0.8rem;
+    color: #ffd93d;
+    opacity: 0.8;
+    margin-top: 4px;
+    text-align: right;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+/* Style for when max combo is shown alone */
+.disco-combo-max.solo {
+    font-size: 1.2rem;
+    opacity: 1;
+    margin-top: 0;
+    text-align: center;
+}
+
+/* Update when max combo is high */
+.disco-combo[data-max-combo="50"] .disco-combo-max,
+.disco-combo[data-max-combo="100"] .disco-combo-max {
+    color: #ff6b6b;
+    font-weight: bold;
+    opacity: 1;
 }

@@ -2,8 +2,9 @@ import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { counterSlice } from "./features/counter/counterSlice";
 import { exerciseApi } from "./features/exercise/exerciseSlice";
 import { scoreSlice } from './features/score/scoreSlice'
+import { comboSlice } from "./features/combo/comboSlice";
 
-const rootReducer = combineSlices(counterSlice, exerciseApi, scoreSlice)
+const rootReducer = combineSlices(counterSlice, exerciseApi, scoreSlice, comboSlice)
 
 export type RootState = ReturnType<typeof rootReducer>
 

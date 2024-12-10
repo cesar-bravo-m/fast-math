@@ -3,6 +3,9 @@ import { useState, memo, useRef, useEffect } from "react";
 import "./disco.css";
 import { useGetExerciseQuery } from "@/lib/features/exercise/exerciseSlice";
 import type { ExerciseResponseData } from "@/app/api/exercise/route";
+import { useSelector } from "react-redux";
+import { incrementCombo, resetCombo, selectCombo, setCombo, selectMaxCombo } from "@/lib/features/combo/comboSlice";
+import { useAppDispatch } from "@/lib/hooks";
 
 interface DiscoPrompt {
     prompt: string;
@@ -62,8 +65,8 @@ const PastTexts = memo(({ pastText }: { pastText: DiscoPrompt[] }) => {
                             {x.givenAnswer}
                             {x.correct !== null && (
                                 <span className={`disco-result ${x.correct ? 'success' : 'failure'}`}>
-                                    {x.givenAnswer === 'Skipped' ? '↷ Skipped' : 
-                                     x.correct ? '✓ Success' : '✗ Failure'}
+                                    {x.givenAnswer === 'Skipped' ? '↷ Saltado' : 
+                                     x.correct ? '✓ Correcto' : '✗ Incorrecto'}
                                 </span>
                             )}
                         </div>
@@ -108,7 +111,7 @@ const InputSection = memo(({
                 value={inputAnswer}
                 onChange={(e) => onInputChange(e.target.value)}
                 onKeyDown={onKeyPress}
-                placeholder="Enter your answer..."
+                placeholder="Ingresa tu respuesta..."
             />
             <div className="disco-button-group">
                 <button 
@@ -116,13 +119,13 @@ const InputSection = memo(({
                     onClick={onSubmit}
                     disabled={!inputAnswer.trim()}
                 >
-                    Submit
+                    Enviar
                 </button>
                 <button 
                     className="disco-button skip"
                     onClick={onSkip}
                 >
-                    Skip
+                    Saltar
                 </button>
             </div>
         </div>
@@ -130,34 +133,34 @@ const InputSection = memo(({
 ))
 InputSection.displayName = 'InputSection'
 
-// Add ComboCounter component
+// Agregar componente ComboCounter
 const ComboCounter = memo(({ combo, breaking, gaugeLevel }: { 
     combo: number, 
     breaking: boolean,
     gaugeLevel: number 
 }) => {
-    if (combo <= 1 && !breaking) return null;
+    const maxCombo = useSelector(selectMaxCombo);
     
     return (
         <div className={`disco-combo ${breaking ? 'breaking' : ''}`}>
-            <div className="disco-combo-count">
-                <span className="disco-combo-x">×</span>
-                {combo}
-            </div>
-            <div className="disco-combo-label">COMBO</div>
-            <div className="disco-combo-gauge-container">
-                <div 
-                    className="disco-combo-gauge" 
-                    style={{ width: `${gaugeLevel}%` }}
-                />
-            </div>
-            {breaking && (
+            {combo >= 1 && (
                 <>
-                    {[...Array(12)].map((_, i) => (
-                        <div key={i} className="disco-combo-shard" />
-                    ))}
+                    <div className="disco-combo-count">
+                        <span className="disco-combo-x">×</span>
+                        {combo}
+                    </div>
+                    <div className="disco-combo-label">COMBO</div>
+                    <div className="disco-combo-gauge-container">
+                        <div 
+                            className="disco-combo-gauge" 
+                            style={{ width: `${gaugeLevel}%` }}
+                        />
+                    </div>
                 </>
             )}
+            <div className={`disco-combo-max ${combo <= 1 ? 'solo' : ''}`}>
+                MAX ×{maxCombo}
+            </div>
         </div>
     );
 });
@@ -169,18 +172,19 @@ export const Disco = () => {
     const [currentPromptIndex, setCurrentPromptIndex] = useState<number>(0);
     const [prompts, setPrompts] = useState<DiscoPrompt[]>([]);
     const { data, isLoading, refetch } = useGetExerciseQuery();
-    const [combo, setCombo] = useState<number>(0);
+    const combo = useSelector(selectCombo)
     const [isComboBreaking, setIsComboBreaking] = useState(false);
     const [gaugeLevel, setGaugeLevel] = useState<number>(100);
+    const dispatch = useAppDispatch();
 
-    // Initial fetch of exercises
+    // Obtener ejercicios iniciales
     useEffect(() => {
         if (data?.exercises && prompts.length === 0) {
             setPrompts(convertExercisesToPrompts(data.exercises));
         }
     }, [data]);
 
-    // Fetch more exercises when needed
+    // Obtener más ejercicios cuando sea necesario
     useEffect(() => {
         const fetchMoreExercises = async () => {
             const result = await refetch();
@@ -189,7 +193,7 @@ export const Disco = () => {
             }
         };
 
-        // Fetch more when 3 prompts remain
+        // Obtener más cuando quedan 3 ejercicios
         if (currentPromptIndex >= prompts.length - 3) {
             fetchMoreExercises();
         }
@@ -201,10 +205,10 @@ export const Disco = () => {
         setIsComboBreaking(true);
         await new Promise(resolve => setTimeout(resolve, 500)); // Wait for animation
         setIsComboBreaking(false);
-        setCombo(0);
+        dispatch(resetCombo());
     };
 
-    // Gauge depletion
+    // Reducción del medidor
     useEffect(() => {
         if (combo <= 1) return;
 
@@ -214,9 +218,9 @@ export const Disco = () => {
                     handleComboBreak();
                     return 0;
                 }
-                return Math.max(0, prev - 1); // Depletes by 1% every interval
+                return Math.max(0, prev - 1); // Se reduce 1% cada intervalo
             });
-        }, 100); // Check every 100ms
+        }, 100); // Revisar cada 100ms
 
         return () => clearInterval(depleteInterval);
     }, [combo]);
@@ -232,7 +236,10 @@ export const Disco = () => {
         };
 
         if (isCorrect) {
-            setCombo(prev => prev + 1);
+            console.log("### correct");
+            console.log("### combo", combo);
+            dispatch(incrementCombo());
+            console.log("### combo after", combo);
             setGaugeLevel(100); // Reset gauge on correct answer
         } else if (combo > 1) {
             handleComboBreak();
